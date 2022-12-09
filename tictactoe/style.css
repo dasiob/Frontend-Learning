@@ -1,0 +1,132 @@
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: linear-gradient(to right, hsl(200, 100%, 50%), hsl(175, 100%, 50%));
+}
+
+:root {
+    --cell-size: 100px;
+    --mark-size: calc(var(--cell-size) * .9);
+}
+.screen {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+
+.board {
+    display: grid;
+    width: 300px;
+    height: 300px;
+    grid-template-columns: repeat(3, auto);
+    grid-gap: 2px;
+    background-color: black;
+}
+
+.cell {
+    width: --cell-size;
+    height: --cell-size;
+    background: hsl(175, 100%, 50%);
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cell.x::after, .cell.x::before,
+.board.x .cell:not(.x):not(.o):hover::before, 
+.board.x .cell:not(.x):not(.o):hover::after{
+    content: '';
+    width: calc(var(--mark-size) * .1);
+    height: var(--mark-size);
+    background-color: rgb(107, 90, 90);
+    position: absolute;
+}
+
+.board.x .cell:not(.x):not(.o):hover::before, 
+.board.x .cell:not(.x):not(.o):hover::after {
+    background-color: rgb(175, 208, 219);
+}
+
+.cell.x::after,
+.board.x .cell:not(.x):hover::after {
+    transform: rotate(45deg);
+}
+
+.cell.x::before,
+.board.x .cell:not(.x):hover::before {
+    transform: rotate(-45deg);
+}
+
+.cell.x, .cell.o{
+    cursor: not-allowed;
+}
+
+.cell.o::before, .cell.o::after,
+.board.o .cell:not(.o):not(.x):hover::after,
+.board.o .cell:not(.o):not(.x):hover::before
+{
+    content: '';
+    border-radius: 50%;
+    position: absolute;
+}
+
+.cell.o::after,
+.board.o .cell:not(.o):not(.x):hover::after{
+    width: calc(var(--mark-size) * .7);
+    height: calc(var(--mark-size) * .7);
+    background: hsl(175, 100%, 50%);
+}
+
+.cell.o::before,
+.board.o .cell:not(.o):not(.x):hover::before{
+    width: calc(var(--mark-size) * .9);
+    height: calc(var(--mark-size) * .9);
+    background-color: rgb(107, 90, 90);
+}
+
+.board.o .cell:not(.x):not(.o):hover::before {
+    background-color: rgb(175, 208, 219);
+}
+
+.winning-message {
+    background-color: rgba(99, 99, 227, 0.7);
+    display: flex;
+    position: ;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    justify-content: center;
+    align-items: center;
+    font-size: 70px;
+    flex-direction: column;
+    color: white;
+    padding-top: 40px;
+}
+
+.winning-message button {
+    height: 60px;
+    width: 120px;
+    font-size: 25px;
+    background-color: rgb(119, 167, 255);
+    color: white;
+    border: 1px solid white;
+    cursor: pointer;
+}
+
+.winning-message button:hover {
+    height: 60px;
+    width: 120px;
+    font-size: 25px;
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}
