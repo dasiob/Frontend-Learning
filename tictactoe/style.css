@@ -98,8 +98,8 @@ body {
 
 .winning-message {
     background-color: rgba(99, 99, 227, 0.7);
-    display: flex;
-    position: ;
+    display: none;
+    position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
