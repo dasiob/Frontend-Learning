@@ -98,3 +98,29 @@ function checkWin(currentClass) {
         })
     })
 }
+
+function checkIfWin(currentClass, index) {
+    return winByRow(currentClass, index) 
+    || winByCollumn(currentClass, index) 
+    || winByDiagonal(currentClass, index);
+}
+
+function winByRow(currentClass, index) {
+    let countRight = 0;
+    let countLeft = 0;
+    for (let i = index; i < ; i)
+}
+
+function convert1Dto2D(index) {
+    if (index <= 13) {
+        return {
+            row: Math.floor(index / 13),
+            column: index 
+        }
+    } else {
+        return {
+            row: Math.floor(index / 13),
+            column: index % 13
+        }
+    }
+}
