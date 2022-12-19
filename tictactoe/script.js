@@ -12,12 +12,20 @@ const WINNING_COMBINATION = [
     [0, 4, 8]
 ];
 
-
 const winningMessagePage = document.getElementById('winning-message');
-const cellElements = document.querySelectorAll('[data-cell]');
 const board = document.getElementById('board');
 const winningMessage = document.querySelector('[data-winning-message-text]');
 const restartButton = document.getElementById('restart-button');
+
+for (let i = 0; i < 117; i++) {
+    let div = document.createElement("div");
+    div.setAttribute('class', 'cell');
+    div.setAttribute('data-cell', '');
+    board.appendChild(div);
+}
+
+const cellElements = document.querySelectorAll('[data-cell]');
+
 startGame();
 
 restartButton.addEventListener('click', startGame);

@@ -9,7 +9,7 @@ body {
 
 :root {
     --cell-size: 100px;
-    --mark-size: calc(var(--cell-size) * .9);
+    --mark-size: calc(var(--cell-size) * .7);
 }
 .screen {
     width: 100vw;
@@ -22,9 +22,9 @@ body {
 
 .board {
     display: grid;
-    width: 300px;
-    height: 300px;
-    grid-template-columns: repeat(3, auto);
+    width: 1000px;
+    height: 700px;
+    grid-template-columns: repeat(13, auto);
     grid-gap: 2px;
     background-color: black;
 }
