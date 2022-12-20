@@ -1,16 +1,6 @@
 const X_CLASS = 'x';
 const O_CLASS = 'o';
 let oTurn;
-const WINNING_COMBINATION = [
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [2, 4, 6],
-    [0, 4, 8]
-];
 
 const winningMessagePage = document.getElementById('winning-message');
 const board = document.getElementById('board');
@@ -19,6 +9,7 @@ const restartButton = document.getElementById('restart-button');
 
 for (let i = 0; i < 117; i++) {
     let div = document.createElement("div");
+    div.innerHTML = i;
     div.setAttribute('class', 'cell');
     div.setAttribute('data-cell', '');
     board.appendChild(div);
@@ -32,21 +23,25 @@ restartButton.addEventListener('click', startGame);
 
 function startGame() {
     oTurn = false;
-    cellElements.forEach(cell => {
-        cell.removeEventListener('click', handleClick);
+    cellElements.forEach((cell, index) => {
+        cell.removeEventListener('click', (e) => {
+            handleClick(e, index)
+        });
         cell.classList.remove(X_CLASS);
         cell.classList.remove(O_CLASS);
-        cell.addEventListener('click', handleClick, {once: true});
+        cell.addEventListener('click', (e) => {
+            handleClick(e, index)
+        }, {once: true});
     });
     setBoardHoverClass();
     winningMessagePage.classList.remove('show');
 }
 
 
-function handleClick(e) {
+function handleClick(e, index) {
     const cell = e.target;
     const currentClass = placeMark(cell, oTurn ? O_CLASS : X_CLASS);
-    if (checkWin(currentClass)) {
+    if (checkIfWin(currentClass, index)) {
         endGame(false);
         console.log('bruh');
     } else if (isDraw()) {
@@ -91,36 +86,157 @@ function switchTurn() {
     oTurn = !oTurn;
 }
 
-function checkWin(currentClass) {
-    return WINNING_COMBINATION.some(combination => {
-        return combination.every(index => {
-            return cellElements[index].classList.contains(currentClass);
-        })
-    })
-}
-
 function checkIfWin(currentClass, index) {
     return winByRow(currentClass, index) 
     || winByCollumn(currentClass, index) 
     || winByDiagonal(currentClass, index);
 }
 
+function winByDiagonal(currentClass, index) {
+    let countUpLeft = 0;
+    let countDownLeft = 0;
+    let countUpRight = 0;
+    let countDownRight = 0;
+    let blockedUpLeft = false;
+    let blockedDownLeft = false;
+    let blockedUpRight = false;
+    let blockedDownRight = false;
+    for (let i = index + 12; i <= index + 5*13 - 5 && i < 117; i = i + 13) {
+        if (!cellElements[i].classList.contains(currentClass)) {
+            if (!cellElements[i].classList.contains(X_CLASS) && !cellElements[i].classList.contains(O_CLASS)) {
+                break;
+            } 
+
+            blockedDown = true;
+            break;
+        }
+
+        countDown++;
+    }
+
+    for (let i = index - 13; i >= index - 5*13 && i >= 0; i = i - 13) {
+        if (!cellElements[i].classList.contains(currentClass)) {
+            if (!cellElements[i].classList.contains(X_CLASS) && !cellElements[i].classList.contains(O_CLASS)) {
+                break;
+            } 
+
+            blockedUp = true;
+            break;
+        }
+
+        countUp++;
+    }
+
+    if (blockedDown && blockedUp) {
+        return false;
+    } 
+
+    if ((blockedDown || blockedUp) && countDown + countUp + 1 == 5) {
+        return true;
+    } 
+        
+    if ((!(blockedDown || blockedUp)) && countDown + countUp + 1 == 4) {
+        return true;
+    }
+
+    return false;
+}
+
 function winByRow(currentClass, index) {
     let countRight = 0;
     let countLeft = 0;
-    for (let i = index; i < ; i)
+    let blockedRight = false;
+    let blockedLeft = false;
+    for (let i = index + 1; i <= index + 5; i++) {
+        if (Math.floor(i / 13) != Math.floor(index / 13)) {
+            break;
+        }
+        if (!cellElements[i].classList.contains(currentClass)) {
+            if (!cellElements[i].classList.contains(X_CLASS) && !cellElements[i].classList.contains(O_CLASS)) {
+                break;
+            } 
+
+            blockedRight = true;
+            break;
+        }
+
+        countRight++;
+    }
+
+    for (let i = index - 1; i >= index - 5; i--) {
+        if (Math.floor(i / 13) != Math.floor(index / 13)) {
+            break;
+        }
+        if (!cellElements[i].classList.contains(currentClass)) {
+            if (!cellElements[i].classList.contains(X_CLASS) && !cellElements[i].classList.contains(O_CLASS)) {
+                break;
+            } 
+
+            blockedLeft = true;
+            break;
+        }
+
+        countLeft++;
+    }
+
+    if (blockedLeft && blockedRight) {
+        return false;
+    } 
+
+    if ((blockedLeft || blockedRight) && countLeft + countRight + 1 == 5) {
+        return true;
+    } 
+        
+    if ((!(blockedLeft || blockedRight)) && countLeft + countRight + 1 == 4) {
+        return true;
+    }
+
+    return false;
 }
 
-function convert1Dto2D(index) {
-    if (index <= 13) {
-        return {
-            row: Math.floor(index / 13),
-            column: index 
+function winByCollumn(currentClass, index) {
+    let countUp = 0;
+    let countDown = 0;
+    let blockedUp = false;
+    let blockedDown = false;
+    for (let i = index + 13; i <= index + 5*13 && i < 117; i = i + 13) {
+        if (!cellElements[i].classList.contains(currentClass)) {
+            if (!cellElements[i].classList.contains(X_CLASS) && !cellElements[i].classList.contains(O_CLASS)) {
+                break;
+            } 
+
+            blockedDown = true;
+            break;
         }
-    } else {
-        return {
-            row: Math.floor(index / 13),
-            column: index % 13
-        }
+
+        countDown++;
     }
+
+    for (let i = index - 13; i >= index - 5*13 && i >= 0; i = i - 13) {
+        if (!cellElements[i].classList.contains(currentClass)) {
+            if (!cellElements[i].classList.contains(X_CLASS) && !cellElements[i].classList.contains(O_CLASS)) {
+                break;
+            } 
+
+            blockedUp = true;
+            break;
+        }
+
+        countUp++;
+    }
+
+    if (blockedDown && blockedUp) {
+        return false;
+    } 
+
+    if ((blockedDown || blockedUp) && countDown + countUp + 1 == 5) {
+        return true;
+    } 
+        
+    if ((!(blockedDown || blockedUp)) && countDown + countUp + 1 == 4) {
+        return true;
+    }
+
+    return false;
 }
+
