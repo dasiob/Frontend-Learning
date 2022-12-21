@@ -25,7 +25,7 @@ function startGame() {
     oTurn = false;
     cellElements.forEach((cell, index) => {
         cell.removeEventListener('click', (e) => {
-            handleClick(e, index)
+            handleClick(e, index) 
         });
         cell.classList.remove(X_CLASS);
         cell.classList.remove(O_CLASS);
@@ -40,10 +40,10 @@ function startGame() {
 
 function handleClick(e, index) {
     const cell = e.target;
+    console.log(index, oTurn);
     const currentClass = placeMark(cell, oTurn ? O_CLASS : X_CLASS);
     if (checkIfWin(currentClass, index)) {
         endGame(false);
-        console.log('bruh');
     } else if (isDraw()) {
         endGame(true);
     } else {
@@ -63,7 +63,7 @@ function endGame(draw) {
     if (draw) {
         winningMessage.innerText = `Draw!`
     } else {
-        winningMessage.innerText = `${oTurn ? "O's" : "X's"} Wins!`
+        winningMessage.innerText = `You suck ${!oTurn ? "O" : "X"}!`
     }
     return winningMessagePage.classList.add('show');
 }
@@ -101,41 +101,95 @@ function winByDiagonal(currentClass, index) {
     let blockedDownLeft = false;
     let blockedUpRight = false;
     let blockedDownRight = false;
-    for (let i = index + 12; i <= index + 5*13 - 5 && i < 117; i = i + 13) {
+    for (let i = index + 12; i < 117 && i <= index + 5 * 13 + 5; i = i + 12) {
+        let previousCellIndex = i - 12;
+        if (Math.floor(previousCellIndex / 13) == Math.floor(i / 13)) {
+            break;
+        }
         if (!cellElements[i].classList.contains(currentClass)) {
             if (!cellElements[i].classList.contains(X_CLASS) && !cellElements[i].classList.contains(O_CLASS)) {
                 break;
             } 
 
-            blockedDown = true;
+            blockedDownLeft = true;
             break;
         }
 
-        countDown++;
+        countDownLeft++;
     }
 
-    for (let i = index - 13; i >= index - 5*13 && i >= 0; i = i - 13) {
+    for (let i = index - 12; i >= 0 && i >= index - 5 * 13 + 5; i = i - 12) {
+        let previousCellIndex = i + 12;
+        if (Math.floor(previousCellIndex / 13) == Math.floor(i / 13)) {
+            break;
+        }
         if (!cellElements[i].classList.contains(currentClass)) {
             if (!cellElements[i].classList.contains(X_CLASS) && !cellElements[i].classList.contains(O_CLASS)) {
                 break;
             } 
 
-            blockedUp = true;
+            blockedUpRight = true;
             break;
         }
 
-        countUp++;
+        countUpRight++;
     }
 
-    if (blockedDown && blockedUp) {
+    for (let i = index + 14; i < 117 && i <= index + 5 * 13 + 5; i = i + 14) {
+        let previousCellIndex = i - 14;
+        if (Math.floor(previousCellIndex / 13) + 2 == Math.floor(i / 13)) {
+            break;
+        }
+        if (!cellElements[i].classList.contains(currentClass)) {
+            if (!cellElements[i].classList.contains(X_CLASS) && !cellElements[i].classList.contains(O_CLASS)) {
+                break;
+            } 
+
+            blockedDownRight = true;
+            break;
+        }
+
+        countDownRight++;
+    }
+
+    for (let i = index - 14; i >= 0 && i >= index - 5 * 13 + 5; i = i - 14) {
+        let previousCellIndex = i + 14;
+        if (Math.floor(previousCellIndex / 13) - 2 == Math.floor(i / 13)) {
+            break;
+        }
+        if (!cellElements[i].classList.contains(currentClass)) {
+            if (!cellElements[i].classList.contains(X_CLASS) && !cellElements[i].classList.contains(O_CLASS)) {
+                break;
+            } 
+
+            blockedUpLeft = true;
+            break;
+        }
+
+        countUpLeft++;
+    }
+
+    if (blockedDownRight && blockedUpLeft) {
+        return false;
+    }
+
+    if (blockedDownLeft && blockedUpRight) {
         return false;
     } 
 
-    if ((blockedDown || blockedUp) && countDown + countUp + 1 == 5) {
+    if ((blockedDownRight || blockedUpLeft) && countDownRight + countUpLeft + 1 >= 5) {
         return true;
     } 
         
-    if ((!(blockedDown || blockedUp)) && countDown + countUp + 1 == 4) {
+    if ((!(blockedDownRight || blockedUpLeft)) && countDownRight + countUpLeft + 1 >= 4) {
+        return true;
+    }
+
+    if ((blockedDownLeft || blockedUpRight) && countDownLeft + countUpRight + 1 >= 5) {
+        return true;
+    } 
+        
+    if ((!(blockedDownLeft || blockedUpRight)) && countDownLeft + countUpRight + 1 >= 4) {
         return true;
     }
 
@@ -183,11 +237,11 @@ function winByRow(currentClass, index) {
         return false;
     } 
 
-    if ((blockedLeft || blockedRight) && countLeft + countRight + 1 == 5) {
+    if ((blockedLeft || blockedRight) && countLeft + countRight + 1 >= 5) {
         return true;
     } 
         
-    if ((!(blockedLeft || blockedRight)) && countLeft + countRight + 1 == 4) {
+    if ((!(blockedLeft || blockedRight)) && countLeft + countRight + 1 >= 4) {
         return true;
     }
 
@@ -229,11 +283,11 @@ function winByCollumn(currentClass, index) {
         return false;
     } 
 
-    if ((blockedDown || blockedUp) && countDown + countUp + 1 == 5) {
+    if ((blockedDown || blockedUp) && countDown + countUp + 1 >= 5) {
         return true;
     } 
         
-    if ((!(blockedDown || blockedUp)) && countDown + countUp + 1 == 4) {
+    if ((!(blockedDown || blockedUp)) && countDown + countUp + 1 >= 4) {
         return true;
     }
 
