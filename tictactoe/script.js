@@ -9,7 +9,6 @@ const restartButton = document.getElementById('restart-button');
 
 for (let i = 0; i < 117; i++) {
     let div = document.createElement("div");
-    div.innerHTML = i;
     div.setAttribute('class', 'cell');
     div.setAttribute('data-cell', '');
     board.appendChild(div);
@@ -24,14 +23,17 @@ restartButton.addEventListener('click', startGame);
 function startGame() {
     oTurn = false;
     cellElements.forEach((cell, index) => {
-        cell.removeEventListener('click', (e) => {
-            handleClick(e, index) 
-        });
+        // cell.removeEventListener('click', cellClickHandler);
         cell.classList.remove(X_CLASS);
         cell.classList.remove(O_CLASS);
-        cell.addEventListener('click', (e) => {
-            handleClick(e, index)
-        }, {once: true});
+        // cell.addEventListener('click', cellClickHandler, {once: true});
+        cell.clicked = false;
+        cell.onclick = (e) => {
+            if (!cell.clicked) {
+                handleClick(e, index);
+            }
+            cell.clicked = true;
+        };
     });
     setBoardHoverClass();
     winningMessagePage.classList.remove('show');
@@ -40,7 +42,6 @@ function startGame() {
 
 function handleClick(e, index) {
     const cell = e.target;
-    console.log(index, oTurn);
     const currentClass = placeMark(cell, oTurn ? O_CLASS : X_CLASS);
     if (checkIfWin(currentClass, index)) {
         endGame(false);
